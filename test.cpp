@@ -1,32 +1,31 @@
 #include <iostream>
-#include <cstdlib>
-#include <random>
-#include <chrono>
 #include <vector>
-#include <list>
+#include <unordered_set>
 
 #include "CacheSim.h"
-
+#include "attack.h"
 
 int main()
 {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937 g1 (seed);
-
-    uint32_t a;
     std::vector<std::vector<uint32_t>> mm;
+    CacheSim* cc = new CacheSim(&mm);
 
-    CacheSim* cache = new CacheSim(&mm);
-    cache->init_size();
+    cc->skew = true;
+    cc->init_size();
+    cc->init_cfg();
+    cc->mod_rep(RANDOM);
 
-    a = g1();
-    cache->read(a);
-    cache->sh_slice(a);
+    uint32_t split = 17;
+    uint32_t size = 10240;
 
-    cache->flush(a);
-    cache->sh_slice(a);
-    cache->read(a);
-    cache->sh_slice(a);
+    uint32_t target = gene_val();
+    std::list<uint32_t> eviction;
+    //evict_group(cc,eviction,size,target,split);
+    // evict_ct(cc, eviction, target);
+    evict_ppp(cc, eviction, size, target);
+    std::cout << "target = " << target << ";set = " << cc->get_set(target) << std::endl;
+    for(auto ev:eviction)
+        std::cout << ev <<" " << cc->get_set(ev)<< std::endl;
 
     return 0;
 }

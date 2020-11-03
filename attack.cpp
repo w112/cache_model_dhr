@@ -68,6 +68,8 @@ void split_set(std::list<uint32_t>& candidate, std::list<uint32_t>& pick, uint32
     std::unordered_set<uint32_t> index_set;
     gene_rand(index,size,candidate.size());
 
+    pick.clear();
+
     for(auto i:index)
         index_set.insert(i);
 
@@ -103,7 +105,9 @@ void reduce_group(CacheSim* cc, std::list<uint32_t>& candidate){
 
 void cand_init(CacheSim* cache, std::list<uint32_t>& candidate,uint32_t target, uint32_t size){
     gene_rand(candidate,size);
-    while(!check(cache,candidate,target));
+    while(!check(cache,candidate,target)){
+        gene_rand(candidate,size);
+    }
 }
 
 void evict_group(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target,uint32_t split){
@@ -148,7 +152,7 @@ void evict_ct(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target){
 
 // used for ScatterCache
 // ppt algorithm
-void evict_ppt(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target){
+void evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target){
     std::list<uint32_t> space_set;
 
     while(candidate.size() < cc->get_way()){
