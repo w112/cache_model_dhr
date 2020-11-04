@@ -89,6 +89,7 @@ public:
     uint32_t get_meta(uint32_t _set,uint32_t _way);
 
     
+    uint32_t encrypt(uint32_t val,uint32_t key);
     void set_meta(uint32_t _set, uint32_t _way, uint32_t _meta);
 
     bool hit(uint32_t addr, uint32_t *_set,uint32_t *_way);

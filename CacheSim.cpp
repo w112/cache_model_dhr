@@ -1,4 +1,5 @@
 #include "CacheSim.h"
+#define NUM_16 ((uint16_t)1<<16)
 
 uint32_t get_rand_val(uint32_t val){
     srand((unsigned)time(NULL));
@@ -10,6 +11,35 @@ uint32_t gene_key(){
     std::mt19937 g(seed);
     uint32_t key = g();
     return key;
+}
+
+// encryption function
+uint32_t CacheSim::encrypt(uint32_t num,uint32_t key){
+    // uint32_t offset = log2(nset);
+    // return val ^ key ^ (val >> offset);
+    uint32_t key_set[] = {key + 1,key + 2, key + 3, key + 4};
+
+    uint16_t lower = (uint16_t)(num & (NUM_16 - 1));
+    uint16_t upper = (uint16_t)(num >> 16);
+
+    uint32_t v0 = lower;
+    uint32_t v1 = upper;
+
+    uint32_t sum = 0;
+    uint32_t delta = 0x9E3779B9;
+
+    uint32_t val;
+
+    for(int i = 0; i < 32; i ++){
+        v0 += (((v1 << 4) ^ (v1 >> 5)) + v1) ^ (sum + key_set[sum & 3]);
+        sum += delta;
+        v1 += (((v0 << 4) ^ (v0 >> 5)) + v0) ^ (sum + key_set[(sum >> 11) & 3]);
+    }
+    lower = v0;
+    upper = v1;
+
+    val = ((uint32_t) upper << 16) | lower;
+    return val;
 }
 
 
@@ -91,12 +121,14 @@ uint32_t CacheSim::get_set(uint32_t addr){
     if(!encry)
         return ((addr >> offset) & (nset - 1));
     else
-        return ((addr >> offset)^key) & (nset - 1);
+        return encrypt( (addr >> offset),key ) & (nset - 1);
 }
 
 uint32_t CacheSim::get_skew_set(uint32_t addr, uint32_t _way){
     // according the paration
-    return ( get_index(addr) ^ skew_fun[(_way % skew_p)] ) & (nset - 1);
+    // return ( get_index(addr) ^ skew_fun[(_way % skew_p)] ) & (nset - 1);
+    return encrypt( get_index(addr),skew_fun[(_way % skew_p)] ) & (nset - 1);
+           
 }
 
 uint32_t CacheSim::get_tag(uint32_t addr){

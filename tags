@@ -1,0 +1,88 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC=g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-c -g$/;"	m
+CacheSim	CacheSim.h	/^    CacheSim(std::vector<std::vector<uint32_t>> *meta, uint32_t nway = 16, uint32_t nset = 1024, uint32_t nwidth = 32,$/;"	f	class:CacheSim
+CacheSim	CacheSim.h	/^class CacheSim{$/;"	c
+DEGUG	CacheSim.h	24;"	d
+ENCRYPT	CacheSim.h	20;"	d
+FIFO	CacheSim.h	/^typedef enum ReplacePolicy{ LRU, FIFO, RANDOM } RP;$/;"	e	enum:ReplacePolicy
+LRU	CacheSim.h	/^typedef enum ReplacePolicy{ LRU, FIFO, RANDOM } RP;$/;"	e	enum:ReplacePolicy
+NUM_16	CacheSim.cpp	2;"	d	file:
+OBJS	Makefile	/^OBJS=CacheSim.o test.o attack.o$/;"	m
+RANDOM	CacheSim.h	/^typedef enum ReplacePolicy{ LRU, FIFO, RANDOM } RP;$/;"	e	enum:ReplacePolicy
+REPLACER	CacheSim.h	19;"	d
+RP	CacheSim.h	/^typedef enum ReplacePolicy{ LRU, FIFO, RANDOM } RP;$/;"	t	typeref:enum:ReplacePolicy
+ReplacePolicy	CacheSim.h	/^typedef enum ReplacePolicy{ LRU, FIFO, RANDOM } RP;$/;"	g
+SET	CacheSim.h	16;"	d
+SKEW	CacheSim.h	21;"	d
+TARGET	Makefile	/^TARGET=test$/;"	m
+WAY	CacheSim.h	17;"	d
+WIDTH	CacheSim.h	18;"	d
+__ATTACK_H__	attack.h	2;"	d
+__CacheSim__H__	CacheSim.h	2;"	d
+access	CacheSim.cpp	/^void CacheSim::access(uint32_t _set,uint32_t _way){$/;"	f	class:CacheSim
+access_high	attack.cpp	/^bool access_high(CacheSim* cc, uint32_t addr){$/;"	f
+access_time	CacheSim.h	/^    uint64_t access_time;$/;"	m	class:CacheSim
+cand_init	attack.cpp	/^void cand_init(CacheSim* cache, std::list<uint32_t>& candidate,uint32_t target, uint32_t size){$/;"	f
+check	attack.cpp	/^bool check(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target){$/;"	f
+delay	CacheSim.h	/^    uint64_t delay;$/;"	m	class:CacheSim
+encry	CacheSim.h	/^    bool encry = false;$/;"	m	class:CacheSim
+encrypt	CacheSim.cpp	/^uint32_t CacheSim::encrypt(uint32_t num,uint32_t key){$/;"	f	class:CacheSim
+evict_ct	attack.cpp	/^void evict_ct(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target){$/;"	f
+evict_group	attack.cpp	/^void evict_group(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target,uint32_t split){$/;"	f
+evict_ppp	attack.cpp	/^void evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target){$/;"	f
+flush	CacheSim.cpp	/^void CacheSim::flush(uint32_t addr){$/;"	f	class:CacheSim
+free_map	CacheSim.h	/^    std::unordered_map<uint32_t,std::unordered_set<uint32_t>> free_map;$/;"	m	class:CacheSim
+gene_key	CacheSim.cpp	/^uint32_t gene_key(){$/;"	f
+gene_rand	attack.cpp	/^void gene_rand(std::list<uint32_t> &group, uint32_t size, uint32_t max = 0){$/;"	f
+gene_val	attack.cpp	/^uint32_t gene_val(){$/;"	f
+get_access	CacheSim.h	/^    uint64_t get_access()   {return access_time;}$/;"	f	class:CacheSim
+get_delay	CacheSim.h	/^    uint64_t get_delay()    {return delay;}$/;"	f	class:CacheSim
+get_index	CacheSim.cpp	/^uint32_t CacheSim::get_index(uint32_t addr){$/;"	f	class:CacheSim
+get_meta	CacheSim.cpp	/^uint32_t CacheSim::get_meta(uint32_t _set,uint32_t _way){$/;"	f	class:CacheSim
+get_rand_val	CacheSim.cpp	/^uint32_t get_rand_val(uint32_t val){$/;"	f
+get_set	CacheSim.cpp	/^uint32_t CacheSim::get_set(uint32_t addr){$/;"	f	class:CacheSim
+get_skew_set	CacheSim.cpp	/^uint32_t CacheSim::get_skew_set(uint32_t addr, uint32_t _way){$/;"	f	class:CacheSim
+get_tag	CacheSim.cpp	/^uint32_t CacheSim::get_tag(uint32_t addr){$/;"	f	class:CacheSim
+get_way	CacheSim.h	/^    uint32_t get_way(){return nway;}$/;"	f	class:CacheSim
+hit	CacheSim.cpp	/^bool CacheSim::hit(uint32_t addr,uint32_t *_set,uint32_t *_way){$/;"	f	class:CacheSim
+init_access_time	CacheSim.h	/^    void init_access_time() {access_time    = 0;}$/;"	f	class:CacheSim
+init_cfg	CacheSim.cpp	/^void CacheSim::init_cfg(){$/;"	f	class:CacheSim
+init_delay	CacheSim.h	/^    void init_delay()       {delay          = 0;}$/;"	f	class:CacheSim
+init_rpinfo	CacheSim.cpp	/^void CacheSim::init_rpinfo(){$/;"	f	class:CacheSim
+init_size	CacheSim.cpp	/^void CacheSim::init_size(){$/;"	f	class:CacheSim
+key	CacheSim.h	/^    uint32_t key = 0;$/;"	m	class:CacheSim
+main	test.cpp	/^int main()$/;"	f
+match	CacheSim.cpp	/^bool CacheSim::match(uint32_t addr, uint32_t m_meta){$/;"	f	class:CacheSim
+meta	CacheSim.h	/^    std::vector<std::vector<uint32_t>> *meta; \/\/ store the data in cache$/;"	m	class:CacheSim
+mod_nset	CacheSim.h	/^    void mod_nset(uint32_t nset) {this->nset = nset;}$/;"	f	class:CacheSim
+mod_nway	CacheSim.h	/^    void mod_nway(uint32_t nway) {this->nway = nway;}$/;"	f	class:CacheSim
+mod_nwidth	CacheSim.h	/^    void mod_nwidth(uint32_t nwidth) {this->nwidth = nwidth;}$/;"	f	class:CacheSim
+mod_rep	CacheSim.h	/^    void mod_rep(RP replacer) {this->replacer = replacer;}$/;"	f	class:CacheSim
+nset	CacheSim.h	/^    uint32_t nset;$/;"	m	class:CacheSim
+nway	CacheSim.h	/^    uint32_t nway;$/;"	m	class:CacheSim
+nwidth	CacheSim.h	/^    uint32_t nwidth;$/;"	m	class:CacheSim
+param	CacheSim.h	/^    uint32_t param = 0;$/;"	m	class:CacheSim
+read	CacheSim.cpp	/^void CacheSim::read(uint32_t addr){$/;"	f	class:CacheSim
+reconf	CacheSim.h	/^    bool reconf = false;$/;"	m	class:CacheSim
+reconfiguration	CacheSim.cpp	/^void CacheSim::reconfiguration(){$/;"	f	class:CacheSim
+reduce_group	attack.cpp	/^void reduce_group(CacheSim* cc, std::list<uint32_t>& candidate){$/;"	f
+replace	CacheSim.cpp	/^uint32_t CacheSim::replace(uint32_t _set){$/;"	f	class:CacheSim
+replace_skew	CacheSim.cpp	/^bool CacheSim::replace_skew(uint32_t addr, uint32_t *_set, uint32_t *_way){$/;"	f	class:CacheSim
+replacer	CacheSim.h	/^    RP replacer;$/;"	m	class:CacheSim
+set_meta	CacheSim.cpp	/^void CacheSim::set_meta(uint32_t _set, uint32_t _way, uint32_t _meta){$/;"	f	class:CacheSim
+sh_cfg	CacheSim.cpp	/^void CacheSim::sh_cfg(){$/;"	f	class:CacheSim
+sh_rp	CacheSim.cpp	/^void CacheSim::sh_rp(){$/;"	f	class:CacheSim
+sh_slice	CacheSim.cpp	/^void CacheSim::sh_slice(uint32_t addr){$/;"	f	class:CacheSim
+skew	CacheSim.h	/^    bool skew  = false;$/;"	m	class:CacheSim
+skew_fun	CacheSim.h	/^    std::vector<uint32_t> skew_fun;$/;"	m	class:CacheSim
+skew_p	CacheSim.h	/^    uint32_t skew_p;$/;"	m	class:CacheSim
+split_set	attack.cpp	/^void split_set(std::list<uint32_t>& candidate, std::list<uint32_t>& pick, uint32_t size){$/;"	f
+threshold	CacheSim.h	/^    uint32_t threshold = 0;$/;"	m	class:CacheSim
+used_map	CacheSim.h	/^    std::unordered_map<uint32_t,std::list<uint32_t>> used_map;$/;"	m	class:CacheSim
+~CacheSim	CacheSim.h	/^    ~CacheSim(){}$/;"	f	class:CacheSim
