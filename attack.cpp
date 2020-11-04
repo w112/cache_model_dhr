@@ -103,22 +103,38 @@ void reduce_group(CacheSim* cc, std::list<uint32_t>& candidate){
     }
 }
 
-void cand_init(CacheSim* cache, std::list<uint32_t>& candidate,uint32_t target, uint32_t size){
+bool cand_init(CacheSim* cache, std::list<uint32_t>& candidate,uint32_t target, uint32_t size){
     gene_rand(candidate,size);
-    while(!check(cache,candidate,target)){
-        gene_rand(candidate,size);
-    }
+    if(check(cache,candidate,target))
+        return true;
+    else
+        return false;
 }
 
-void evict_group(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target,uint32_t split){
+bool evict_group(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target,uint32_t split){
     uint32_t step;
     uint32_t loop;
     std::list<uint32_t> picked_set;
+ 
+    uint32_t loop_init = 0;
+    uint32_t loop_ev   = 0;
 
-    cand_init(cc,candidate,target,size);
+    while(!cand_init(cc,candidate,target,size)){
+        loop_init++;
+        if(loop_init > 100){
+            std::cout << "failed" << std::endl;
+            return false;
+        }
+    }
 
     while(candidate.size() > cc->get_way()){
         // cal the step 
+        loop_ev ++;
+        if(loop_ev > 100000){
+            std::cout << "failed" << std::endl;
+            return false;
+        }
+
         if(candidate.size() > 2*split){
             step = (candidate.size() + split - 1)/ split;
         }else{
@@ -129,18 +145,23 @@ void evict_group(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, ui
             candidate.insert(candidate.end(),picked_set.begin(),picked_set.end());
         }
     }
+    return true;
 
 }
 
 // used for random policy cache
 // conflict eviction
-void evict_ct(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target){
+void evict_ct(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target,uint32_t set_size){
     std::unordered_set<uint32_t> conflict;
 
     uint32_t val;
     cc->read(target);
-    while(conflict.size() < cc->get_way()){
+    while(conflict.size() < set_size){
         val = gene_val();
+        while(val == target){
+            val = gene_val();
+        }
+
         cc->read(val);
         if(access_high(cc,target)){
             conflict.insert(val);
@@ -152,11 +173,19 @@ void evict_ct(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target){
 
 // used for ScatterCache
 // ppt algorithm
-void evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target){
+bool evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t can_size, uint32_t target,uint32_t set_size){
     std::list<uint32_t> space_set;
 
-    while(candidate.size() < cc->get_way()){
-        cand_init(cc,space_set,target,size);
+    while(candidate.size() < set_size){
+        
+        uint32_t loop_init = 0;
+        while(!cand_init(cc,space_set,target,can_size)){
+            loop_init++;
+            if(loop_init > 10000){
+                std::cout << "failed" << std::endl;
+                return false;
+            }
+        }
         reduce_group(cc,space_set);
 
         cc->read(target);
@@ -165,7 +194,36 @@ void evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint
                 candidate.push_back(ev);
         }
     }
+    return true;
 }
 
+bool check_set(CacheSim* cc, std::list<uint32_t>& eviction, uint32_t target){
+
+    std::unordered_set<uint32_t> skew_set;
+
+    if(cc->skew){
+        skew_set.clear();
+        // attacker has no right to access this function, only use for test the successful ratio
+        for(int i = 0; i < cc->get_way();i ++){
+            skew_set.insert(cc->get_skew_set(target,i));
+        }
+        
+        for(auto ev:eviction){
+            for(int i = 0; i < cc->get_way();i++){
+                uint32_t ss = cc->get_skew_set(ev,i);
+                if(skew_set.count(ss) > 0){
+                    std::cout << "S:" << ss << " A:" << ev << std::endl; 
+                    break;
+                }
+            }
+        }
+    }else{
+        std::cout << "target = " << target << ";set = " << cc->get_set(target) << std::endl;
+        for(auto ev:eviction)
+            std::cout << ev <<" " << cc->get_set(ev)<< std::endl;
+    }
+
+    return true;
+}
 
 

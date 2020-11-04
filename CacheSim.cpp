@@ -1,15 +1,16 @@
 #include "CacheSim.h"
 #define NUM_16 ((uint16_t)1<<16)
 
-uint32_t get_rand_val(uint32_t val){
-    srand((unsigned)time(NULL));
-    return rand()%val;
-}
-
-uint32_t gene_key(){
+uint32_t gene_key(uint32_t max = 0){
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 g(seed);
-    uint32_t key = g();
+    uint32_t key;
+
+    if(max == 0){
+        key = g();
+    }else{
+        key = g()%max;
+    }
     return key;
 }
 
@@ -226,7 +227,7 @@ bool CacheSim::replace_skew(uint32_t addr, uint32_t *_set, uint32_t *_way){
         }
         // has no free space
     }
-    *_way = get_rand_val(nway);
+    *_way = gene_key(nway);
     *_set = get_skew_set(addr,*_way);
     return false;
 }
@@ -246,7 +247,7 @@ uint32_t CacheSim::replace(uint32_t _set){
             if(free_map[_set].size() > 0)
                 return *(free_map[_set].begin());
             else
-                return get_rand_val(nway);
+                return gene_key(nway);
     }
 }
 

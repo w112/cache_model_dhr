@@ -41,9 +41,9 @@ private:
     // key for encryption
     uint32_t key = 0;
     // skew function for different way
-    uint32_t skew_p;
     std::vector<uint32_t> skew_fun;
 
+    uint32_t skew_p;
     // store information of replacement policy
     std::unordered_map<uint32_t,std::unordered_set<uint32_t>> free_map;
     std::unordered_map<uint32_t,std::list<uint32_t>> used_map;
@@ -62,8 +62,8 @@ public:
     uint32_t threshold = 0;
     uint32_t param = 0;
 
-    CacheSim(std::vector<std::vector<uint32_t>> *meta, uint32_t nway = 16, uint32_t nset = 1024, uint32_t nwidth = 32,
-             RP replacer = LRU, uint32_t skew_p = 2)
+    CacheSim(std::vector<std::vector<uint32_t>> *meta,uint32_t skew_p = 2, uint32_t nway = 16, uint32_t nset = 1024, uint32_t nwidth = 32,
+             RP replacer = LRU)
         :meta(meta),nway(nway),nset(nset),nwidth(nwidth),replacer(replacer),skew_p(skew_p)
     {}
 
@@ -80,6 +80,7 @@ public:
     void init_cfg();
     void init_size();
     void init_rpinfo();
+    void init_ac_time(){access_time = 0;}
 
     uint32_t get_way(){return nway;}
     uint32_t get_index(uint32_t addr); // use for encrypted input

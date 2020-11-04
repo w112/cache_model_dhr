@@ -13,12 +13,14 @@
 uint32_t gene_val();
 
 // [57]
-void evict_group(CacheSim* cache, std::list<uint32_t>& candidate, uint32_t size, uint32_t target,uint32_t split);
+bool evict_group(CacheSim* cache, std::list<uint32_t>& candidate, uint32_t size, uint32_t target,uint32_t split);
 
 // [97]
-void evict_ct(CacheSim* cache, std::list<uint32_t>& candidate, uint32_t target);
+void evict_ct(CacheSim* cache, std::list<uint32_t>& candidate, uint32_t target,uint32_t set_size);
 
 // [108]
-void evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, uint32_t target);
+bool evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t can_size, uint32_t target,uint32_t set_size);
+
+bool check_set(CacheSim* cc, std::list<uint32_t>& eviction, uint32_t target);
 
 #endif
