@@ -118,35 +118,44 @@ bool evict_group(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, ui
  
     uint32_t loop_init = 0;
     uint32_t loop_ev   = 0;
+    uint32_t fail_time = 0;
 
     while(!cand_init(cc,candidate,target,size)){
+        candidate.clear();
         loop_init++;
+        std::cout << "loop_init = "<< loop_init << std::endl;
         if(loop_init > 100){
+            std::cout << "loop_init = "<< loop_init << std::endl;
             std::cout << "failed" << std::endl;
             return false;
         }
     }
 
-    while(candidate.size() > cc->get_way()){
+    while(candidate.size() > split){
         // cal the step 
+        //std::cout << "candidate= " << candidate.size() << std::endl;
         loop_ev ++;
-        if(loop_ev > 100000){
-            std::cout << "failed" << std::endl;
-            return false;
-        }
-
-        if(candidate.size() > 2*split){
-            step = (candidate.size() + split - 1)/ split;
-        }else{
-            step = 1;
-        }
-        split_set(candidate,picked_set,step);
+        std::cout << "loop_ev =" << loop_ev << std::endl;
         if(!check(cc,candidate,target)){
-            candidate.insert(candidate.end(),picked_set.begin(),picked_set.end());
+            fail_time++;
+            if(fail_time > 100)
+                break;
+        }else{
+            fail_time = 0;
+            if(candidate.size() > 2*split){
+                step = (candidate.size() + split - 1)/ split;
+            }else{
+                step = 1;
+            }
+            split_set(candidate,picked_set,step);
+            if(!check(cc,candidate,target)){
+                candidate.insert(candidate.end(),picked_set.begin(),picked_set.end());
+            }
+
         }
     }
-    return true;
 
+    return true;
 }
 
 // used for random policy cache
@@ -197,7 +206,27 @@ bool evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t can_size, 
     return true;
 }
 
-bool check_set(CacheSim* cc, std::list<uint32_t>& eviction, uint32_t target){
+
+// judge the total number is in eviciton set or not
+bool check_set(CacheSim* cc,std::list<uint32_t>& eviction, uint32_t target){
+    uint32_t set_val = cc->get_set(target);
+    uint32_t actual_value = 0; 
+
+    for(auto ev:eviction){
+        if(set_val == cc->get_set(ev)){
+            actual_value ++;
+        }
+    }
+
+    if(actual_value < cc->get_way())
+        return false;
+    else
+        return true;
+
+}
+
+
+bool check_set_skew(CacheSim* cc, std::list<uint32_t>& eviction, uint32_t target){
 
     std::unordered_set<uint32_t> skew_set;
 

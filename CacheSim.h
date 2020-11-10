@@ -57,10 +57,12 @@ public:
     // statistic value 
     uint64_t delay;
     uint64_t access_time;
+    uint64_t access_threshold;
 
     // dynamic condition for reconfiguration
-    uint32_t threshold = 0;
+    double   rate      = 0;
     uint32_t param = 0;
+    uint32_t threshold = rate*nway*nset;
 
     CacheSim(std::vector<std::vector<uint32_t>> *meta,uint32_t skew_p = 2, uint32_t nway = 16, uint32_t nset = 1024, uint32_t nwidth = 32,
              RP replacer = LRU)
@@ -69,7 +71,7 @@ public:
 
     // get the statistic value
     void init_delay()       {delay          = 0;}
-    void init_access_time() {access_time    = 0;}
+    void init_access_time() {access_time    = 0;access_threshold = 0;}
     uint64_t get_delay()    {return delay;}
     uint64_t get_access()   {return access_time;}
 

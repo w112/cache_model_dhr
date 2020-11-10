@@ -21,6 +21,11 @@ void evict_ct(CacheSim* cache, std::list<uint32_t>& candidate, uint32_t target,u
 // [108]
 bool evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t can_size, uint32_t target,uint32_t set_size);
 
-bool check_set(CacheSim* cc, std::list<uint32_t>& eviction, uint32_t target);
+
+bool check(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target);
+
+bool check_set_skew(CacheSim* cc, std::list<uint32_t>& eviction, uint32_t target);
+
+bool check_set(CacheSim* cc,std::list<uint32_t>& eviction, uint32_t target);
 
 #endif

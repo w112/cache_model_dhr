@@ -90,6 +90,9 @@ void CacheSim::init_cfg(){
         for(int i = 0; i < skew_p; i++)
             skew_fun.push_back(gene_key());
     }
+    if(reconf){
+        threshold = rate*nway*nset;
+    }
 }
 
 void CacheSim::init_size(){
@@ -205,9 +208,13 @@ void CacheSim::access(uint32_t _set,uint32_t _way){
             break;
     }
     access_time++;
+    access_threshold++;
     if(reconf){
-        if(access_time > threshold){
+        if(access_threshold > threshold){
+            std::cout << "reconfiguration" << std::endl;
+            access_threshold = 0;
             reconfiguration();
+            threshold = rate*nway*nset;
         }
     }
 }
@@ -291,13 +298,13 @@ void CacheSim::reconfiguration(){
     int size_replace    = sizeof(replace_pool)/sizeof(replace_pool[0]);
 
 
-    if((param & SET) == SET){ mod_nset(set_pool[rand()%size_set]); }
+    if((param & SET) == SET){ mod_nset(set_pool[gene_key()%size_set]); }
 
-    if((param & WAY) == WAY){ mod_nway(way_pool[rand()%size_way]); }
+    if((param & WAY) == WAY){ mod_nway(way_pool[gene_key()%size_way]); }
     
-    if((param & WIDTH) == WIDTH){ mod_nwidth(width_pool[rand()%size_width]); }
+    if((param & WIDTH) == WIDTH){ mod_nwidth(width_pool[gene_key()%size_width]); }
 
-    if((param & REPLACER) == REPLACER) { mod_rep(replace_pool[rand()%size_replace]); }
+    if((param & REPLACER) == REPLACER) { mod_rep(replace_pool[gene_key()%size_replace]); }
     // 
     if((param & ENCRYPT) == ENCRYPT){ key = gene_key(); }
 
@@ -306,6 +313,9 @@ void CacheSim::reconfiguration(){
             skew_fun[i] = gene_key();
         }
     }
-    if(param == 1 || param == 2 || param == 4){ init_size(); } 
+    if(param == 1 || param == 2 || param == 4){ 
+        init_size(); 
+        init_rpinfo();
+    } 
     if(param == 8){ init_rpinfo(); }
 }
