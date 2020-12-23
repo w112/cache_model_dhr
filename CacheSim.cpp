@@ -82,7 +82,7 @@ void CacheSim::init_cfg(){
     this->nway = 16;
     this->nset = 1024;
     this->nwidth = 32;
-    this->replacer = LRU;
+    this->replacer = RANDOM;
     if(encry){
         key = gene_key();
     }
@@ -93,16 +93,20 @@ void CacheSim::init_cfg(){
     if(reconf){
         threshold = rate*nway*nset;
     }
+    init_size();
+    init_rpinfo();
 }
 
 void CacheSim::init_size(){
-    (*meta).resize(nset);
-    for(int i = 0; i < (*meta).size(); i++){
-        (*meta)[i].resize(nway);
+    (meta).resize(nset);
+    for(int i = 0; i < (meta).size(); i++){
+        (meta)[i].resize(nway);
     }
 }
 
 void CacheSim::init_rpinfo(){
+    free_map.clear();
+    used_map.clear();
     for(int i = 0; i < nset; i++){
         for(int j = 0; j < nway; j++){
             free_map[i].insert(j);
@@ -141,7 +145,7 @@ uint32_t CacheSim::get_tag(uint32_t addr){
 }
 
 uint32_t CacheSim::get_meta(uint32_t _set,uint32_t _way){
-    return (*meta)[_set][_way];
+    return (meta)[_set][_way];
 }
 
 void CacheSim::set_meta(uint32_t _set, uint32_t _way, uint32_t _meta){
@@ -149,7 +153,7 @@ void CacheSim::set_meta(uint32_t _set, uint32_t _way, uint32_t _meta){
     // there will be latency
     // however, there is no time to access cache
     delay += 1; 
-    (*meta)[_set][_way] = _meta;
+    (meta)[_set][_way] = _meta;
 }
 
 bool CacheSim::match(uint32_t addr, uint32_t m_meta){

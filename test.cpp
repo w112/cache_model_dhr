@@ -1,54 +1,67 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <vector>
 #include <unordered_set>
-
 #include "CacheSim.h"
 #include "attack.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-    std::unordered_set<uint32_t> skew_set;
+    if(argc != 6){
+        std::cout << "Usage: split testN param rate cpu" << std::endl;
+        return 0;
+    }
+    
+    uint32_t split = std::stoi(std::string(argv[1]));
+    uint32_t testN = std::stoi(std::string(argv[2]));
+    uint32_t param = std::stoi(std::string(argv[3]));
+    double   rate = std::stoi(std::string(argv[4]));
+    uint32_t cpu = std::stoi(std::string(argv[5]));
 
     std::vector<std::vector<uint32_t>> mm;
-    CacheSim* cc = new CacheSim(&mm);
-
-    cc->skew = true;
-    cc->init_size();
-    cc->init_cfg();
-    cc->mod_rep(RANDOM);
-
-    uint32_t split = 17;
-    uint32_t size = 10240;
-
-    uint32_t target = gene_val();
     std::list<uint32_t> eviction;
-    //evict_group(cc,eviction,size,target,split);
-    evict_ct(cc, eviction, target);
-    // evict_ppp(cc, eviction, size, target);
+    std::vector<CacheSim*> dhr_cpu;
+    // CacheSim* cc = new CacheSim(&mm);
 
-    if(cc->skew){
-        skew_set.clear();
-        // attacker has no right to access this function, only use for test the successful ratio
-        for(int i = 0; i < cc->get_way();i ++){
-            skew_set.insert(cc->get_skew_set(target,i));
-        }
-        for(auto it:eviction)
-            std::cout << "slice :" << it << std::endl;
-
-        for(auto ev:eviction){
-            for(int i = 0; i < cc->get_way();i++){
-                uint32_t ss = cc->get_skew_set(ev,i);
-                if(skew_set.count(ss) > 0){
-                    std::cout << "S:" << ss << " A:" << ev << std::endl; 
-                    break;
-                }
-            }
-        }
-
-    }else{
-        std::cout << "target = " << target << ";set = " << cc->get_set(target) << std::endl;
-        for(auto ev:eviction)
-            std::cout << ev <<" " << cc->get_set(ev)<< std::endl;
+    for(int i = 0; i < cpu; i ++){
+        CacheSim* cc = new CacheSim();
+        cc->reconf = false;
+        cc->encry = true;
+        dhr_cpu.push_back(cc);
     }
-        return 0;
+
+    //cc->reconf = true;
+    //cc->encry  = true;
+    //cc->param = param;
+    //cc->rate = rate;
+
+
+    uint64_t total_access = 0;
+    double   total_succ   = 0;
+
+    for(int l = 0; l < testN;l ++){
+        std::cout << "round:" << l << std::endl;
+ 
+        for(auto cpux:dhr_cpu){
+            cpux->init_cfg();
+            cpux->init_size();
+            cpux->init_ac_time();
+        }
+
+        eviction.clear();    
+        uint32_t target = gene_val();
+        // evict_group(cc,eviction,10240,target,split);
+        // evict_ppp(cc, eviction, 10240, target, ev_set);
+        evict_ct(dhr_cpu, eviction, target,split);
+        total_access += dhr_cpu[0]->access_time;
+
+        for(auto cpux:dhr_cpu){
+            cpux->init_ac_time();
+        }
+    std::cout << (total_access / testN) << std::endl;
+    std::cout << total_succ << std::endl;
+    }
+
+    return 0;
 }

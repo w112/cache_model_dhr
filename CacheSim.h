@@ -32,7 +32,7 @@ typedef enum ReplacePolicy{ LRU, FIFO, RANDOM } RP;
 
 class CacheSim{
 private:
-    std::vector<std::vector<uint32_t>> *meta; // store the data in cache
+    std::vector<std::vector<uint32_t>> meta; // store the data in cache
     uint32_t nway;
     uint32_t nset;
     uint32_t nwidth;
@@ -62,12 +62,21 @@ public:
     // dynamic condition for reconfiguration
     double   rate      = 0;
     uint32_t param = 0;
-    uint32_t threshold = rate*nway*nset;
-
-    CacheSim(std::vector<std::vector<uint32_t>> *meta,uint32_t skew_p = 2, uint32_t nway = 16, uint32_t nset = 1024, uint32_t nwidth = 32,
-             RP replacer = LRU)
-        :meta(meta),nway(nway),nset(nset),nwidth(nwidth),replacer(replacer),skew_p(skew_p)
-    {}
+    double threshold = rate*nway*nset;
+    
+    CacheSim(uint32_t skew_p = 2, uint32_t nway = 16, uint32_t nset = 1024, uint32_t nwidth = 32,
+             RP replacer = RANDOM)
+        :nway(nway),nset(nset),nwidth(nwidth),replacer(replacer),skew_p(skew_p)
+    {
+        (meta).resize(nset);
+        for(int i = 0; i < (meta).size(); i++){
+            (meta)[i].resize(nway);
+        }
+    }
+    //CacheSim(std::vector<std::vector<uint32_t>> meta,uint32_t skew_p = 2, uint32_t nway = 16, uint32_t nset = 1024, uint32_t nwidth = 32,
+    //         RP replacer = LRU)
+    //    :meta(meta),nway(nway),nset(nset),nwidth(nwidth),replacer(replacer),skew_p(skew_p)
+    //{}
 
     // get the statistic value
     void init_delay()       {delay          = 0;}
@@ -82,7 +91,10 @@ public:
     void init_cfg();
     void init_size();
     void init_rpinfo();
-    void init_ac_time(){access_time = 0;}
+    void init_ac_time(){
+        access_time = 0;
+        access_threshold = 0;
+    }
 
     uint32_t get_way(){return nway;}
     uint32_t get_index(uint32_t addr); // use for encrypted input

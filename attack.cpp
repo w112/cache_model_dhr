@@ -138,7 +138,7 @@ bool evict_group(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, ui
         std::cout << "loop_ev =" << loop_ev << std::endl;
         if(!check(cc,candidate,target)){
             fail_time++;
-            if(fail_time > 100)
+            if(fail_time > 100 || loop_ev > 1000)
                 break;
         }else{
             fail_time = 0;
@@ -160,21 +160,39 @@ bool evict_group(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t size, ui
 
 // used for random policy cache
 // conflict eviction
-void evict_ct(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target,uint32_t set_size){
+// std::vector<CacheSim*> dhr_cpu;
+// void evict_ct(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t target,uint32_t set_size){
+void evict_ct(std::vector<CacheSim*> dhr_cpu, std::list<uint32_t>& candidate, uint32_t target,uint32_t set_size){
+ 
     std::unordered_set<uint32_t> conflict;
-
     uint32_t val;
-    cc->read(target);
+    
+    // read target to cache
+    for(auto cpux:dhr_cpu){
+        cpux->read(target);
+    }
+    // cc->read(target);
+
     while(conflict.size() < set_size){
         val = gene_val();
         while(val == target){
             val = gene_val();
         }
 
-        cc->read(val);
-        if(access_high(cc,target)){
+        uint32_t con_num = 0;
+        // this conflict must comes from same cpu set
+        for(auto cpux:dhr_cpu){
+            cpux->read(val);
+            if(access_high(cpux,target))
+                con_num++;
+        }
+        if(con_num*2 >= dhr_cpu.size()){
             conflict.insert(val);
         }
+        //cc->read(val);
+        //if(access_high(cc,target)){
+        //    conflict.insert(val);
+        //}
     }
 
     candidate = std::list<uint32_t>(conflict.begin(),conflict.end());

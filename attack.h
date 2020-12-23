@@ -16,7 +16,8 @@ uint32_t gene_val();
 bool evict_group(CacheSim* cache, std::list<uint32_t>& candidate, uint32_t size, uint32_t target,uint32_t split);
 
 // [97]
-void evict_ct(CacheSim* cache, std::list<uint32_t>& candidate, uint32_t target,uint32_t set_size);
+//void evict_ct(CacheSim* cache, std::list<uint32_t>& candidate, uint32_t target,uint32_t set_size);
+void evict_ct(std::vector<CacheSim*> dhr_cpu, std::list<uint32_t>& candidate, uint32_t target,uint32_t set_size);
 
 // [108]
 bool evict_ppp(CacheSim* cc, std::list<uint32_t>& candidate, uint32_t can_size, uint32_t target,uint32_t set_size);
